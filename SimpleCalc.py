@@ -1,41 +1,36 @@
-# Simple Calculator
+OPERATIONS = {
+    "+": lambda left, right: left + right,
+    "-": lambda left, right: left - right,
+    "*": lambda left, right: left * right,
+    "/": lambda left, right: left / right,
+    "%": lambda left, right: left % right,
+}
 
-# A simple calculator that performs basic arithmetic operations based on user input
-def simple_calc(var1, var2, sign):
-    if(sign == '+'): 
-        print(f"The sum of {var1} and {var2} is: {float(var1) + float(var2)}")
-    elif(sign == '-'):
-        print(f"The difference of {var1} and {var2} is: {float(var1) - float(var2)}")
-    elif(sign == '*'):
-        print(f"The product of {var1} and {var2} is: {float(var1) * float(var2)}")
-    elif(sign == '/'):
-        print(f"The quotient of {var1} and {var2} is: {float(var1) / float(var2)}")
-    elif(sign == '%'):
-        print(f"The remainder of {var1} and {var2} is: {float(var1) % float(var2)}")
 
-# Function to check if the user wants to continue using the calculator
-def check_continue():
-    response = input("Do you want to perform another calculation? (yes/no):").lower().strip()
-    if(response != "yes"): 
-        print("Thank you for using the calculator. Goodbye!")
-        return False
-    return True 
+def calculate(left, right, operator):
+    """Calculate a result for one of the supported arithmetic operators."""
+    if operator not in OPERATIONS:
+        raise ValueError(f"Unsupported operator: {operator}")
+    if operator in {"/", "%"} and right == 0:
+        raise ZeroDivisionError("The second number cannot be zero for this operation.")
+    return OPERATIONS[operator](left, right)
 
-ok = True 
-while ok:
-    # The variables to store the user's inputs to perform the calculation
-    var1 = input("Enter First Number: ")
-    var2 = input("Enter Second Number: ")
 
-    # The variable to store the operation to be performed and the list of valid operations
-    sign = input("Enter the operation (+, -, *, /, %): ")
-    signs = ['+', '-', '*', '/', '%']
+def main():
+    print("Simple Calculator")
+    while True:
+        try:
+            left = float(input("First number: "))
+            operator = input("Operation (+, -, *, /, %): ").strip()
+            right = float(input("Second number: "))
+            print(f"Result: {calculate(left, right, operator):g}")
+        except (ValueError, ZeroDivisionError) as error:
+            print(f"Error: {error}")
 
-    # Check if the entered operation is valid and perform the calculation if it is
-    if sign in signs: 
-        simple_calc(var1, var2, sign)
+        if input("Another calculation? (y/n): ").strip().lower() != "y":
+            print("Goodbye!")
+            break
 
-        # Ask the user if they want to perform another calculation
-        ok = check_continue()
-    else: 
-        print("Invalid operation. Please try again.")
+
+if __name__ == "__main__":
+    main()
